@@ -13,11 +13,9 @@ from brownie import (
 def main():
     account = get_account()
     print(f"Deploying to {network.show_active()}")
-    box = Box.deploy({"from": account})
+    box = Box.deploy({"from": account}, publish_source=True)
 
-    proxy_admin = ProxyAdmin.deploy({"from": account})
-
-    # initializer = box.store, 1
+    proxy_admin = ProxyAdmin.deploy({"from": account}, publish_source=True)
     box_encoded_initializer_function = encode_function_data()
 
     proxy = TransparentUpgradeableProxy.deploy(
@@ -25,6 +23,7 @@ def main():
         proxy_admin.address,
         box_encoded_initializer_function,
         {"from": account, "gas_limit": 1000000},
+        publish_source=True,
     )
     print(f"Proxy deployed to {proxy}, you can now upgrade to V2!")
 
@@ -34,7 +33,7 @@ def main():
     proxy_box.store(1, {"from": account})
 
     # Upgrade
-    box_v2 = BoxV2.deploy({"from": account})
+    box_v2 = BoxV2.deploy({"from": account}, publish_source=True)
     upgrade_transaction = upgrade(
         account, proxy, box_v2.address, proxy_admin_contract=proxy_admin
     )

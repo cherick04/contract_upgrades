@@ -15,9 +15,7 @@ def get_account(index=None, id=None):
         return accounts.load(id)
     if network.show_active() in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         return accounts[0]
-    if network.show_active() in config["networks"]:
-        return accounts.add(config["wallets"]["from_key"])
-    return None
+    return accounts.add(config["wallets"]["from_key"])
 
 
 # Encode arguments into bytes, so that the contract knows what function to call
